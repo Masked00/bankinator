@@ -165,8 +165,8 @@ def correct_line(image):
     
     
 def pad_img(img, img_bkp):
-    start_pos = start(img); print(start_pos)
-    stop_pos = stop(img); print(stop_pos)
+    start_pos = start(img)
+    stop_pos = stop(img)
     if (start_pos - 10) >= 0:
         start_pos = start_pos - 10
     else:
