@@ -1,10 +1,12 @@
 from imports import *
 
+
 def start_pos(image, restart):
     """Function to find start point of the Non - White pixel"""
     for i in range(restart, image.shape[0]):
         if 0 in image[i]:
             return i
+    return None
 
 
 def stop_pos(image, start):
@@ -18,7 +20,7 @@ def stop_pos(image, start):
         stop = image.shape[0]
         return stop
     else:
-        return stop
+        return stop;return None
 
         
 def strt_stp_pos_image(bw_image):
@@ -167,14 +169,14 @@ def correct_line(image):
 def pad_img(img, img_bkp):
     start_pos = start(img)
     stop_pos = stop(img)
-    if (start_pos - 10) >= 0:
+    if start_pos is not None and (start_pos - 10) >= 0:
         start_pos = start_pos - 10
     else:
-        start_pos = start_pos
-    if (stop_pos + 10) <= img.shape[0]:
+        start_pos = 0
+    if stop_pos is not None and (stop_pos + 10) <= img.shape[0]:
         stop_pos = stop_pos + 10
     else:
-        stop_pos = stop_pos
+        stop_pos = 0
     
     pad_img = img[start_pos:stop_pos]
     pad_img_bkp = img_bkp[start_pos:stop_pos]
