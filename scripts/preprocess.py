@@ -25,7 +25,7 @@ def stop_pos(image, start):
         
 def strt_stp_pos_image(bw_image):
     """this function is used for padding for tracking start and stop points"""
-#     bw_image = np.array(bw_image)
+
     restart = 0
     start_pos_arr = []
     stop_pos_arr = []
@@ -81,29 +81,19 @@ def detect_horizontal_line(image):
             y0 = b*r 
             x1 = int(x0 + 1000*(-b)) 
             y1 = int(y0 + 1000*(a)) 
-#             x2 = int(x0 - 1000*(-b)) 
-#             y2 = int(y0 - 1000*(a)) 
-#             x2 = image.shape[1]
-            x2 = image.shape[1]
             y2 = y1
-    # --Draws a complete horizontal line ------ #
             cv2.line(image,(x1,y1), (x2,y2), (0,0,255),3)
     return image
 
 def correct_line(image):
-    """this function preprocesses the form, removes all the lines across the form"""    
+  
     binary_img = cv2.bitwise_not(image)
     binary_image = np.copy(binary_img)
 
     col = binary_image.shape[1]
-
     kernel_size = int(col / 80)
-#      v_kernel_size = int(col / 40)
     v_kernel_size = 20
-#      kernel_size = 20
-#      kernel_size = 10
-#      print('kernel size->', kernel_size)
-    # ----Create horizontal and vertical line mask -- #
+
 
     horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (kernel_size, 1))
     vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, v_kernel_size))
@@ -119,8 +109,7 @@ def correct_line(image):
     horizontal_line = cv2.threshold(horizontal_line, 0, 255, cv2.THRESH_OTSU)[1]
     vertical_line = cv2.threshold(vertical_line, 0, 255, cv2.THRESH_OTSU)[1]
 
-    # -- Store final horizontal & vertical mask -- #
-    # -- in the below numpy arrays                -- #
+             
 
     horizontal_line_cpy = np.zeros_like(horizontal_line)
     vertical_line_cpy = np.zeros_like(vertical_line)
@@ -150,7 +139,7 @@ def correct_line(image):
     vertical_line = cv2.bitwise_not(vertical_line)
     
     final_mask = cv2.bitwise_or(vertical_line, vertical_line, mask = horizontal_line)
-#      final_mask = draw_horizontal_line(final_mask)
+
 
     cv2.imwrite('./../final_mask.jpg', final_mask)
     final_mask = cv2.threshold(final_mask, 0, 255, cv2.THRESH_OTSU)[1]
@@ -158,7 +147,6 @@ def correct_line(image):
     res = cv2.bitwise_and(binary_image, binary_image, mask = final_mask)
     res = cv2.bitwise_not(cv2.threshold(res, 0, 255, cv2.THRESH_OTSU)[1])
 
-    # -- For filling lost features -- #
     temp = cv2.inpaint(res, horizontal_line_mask, 3, cv2.INPAINT_TELEA)
     line_corrected_img = cv2.inpaint(temp, vertical_line_mask, 3, cv2.INPAINT_TELEA)
     line_corrected_img = cv2.threshold(line_corrected_img, 0, 255, cv2.THRESH_OTSU)[1]
@@ -172,11 +160,11 @@ def pad_img(img, img_bkp):
     if start_pos is not None and (start_pos - 10) >= 0:
         start_pos = start_pos - 10
     else:
-        start_pos = 0
+        start_pos = start_pos
     if stop_pos is not None and (stop_pos + 10) <= img.shape[0]:
         stop_pos = stop_pos + 10
     else:
-        stop_pos = 0
+        stop_pos = stop_pos
     
     pad_img = img[start_pos:stop_pos]
     pad_img_bkp = img_bkp[start_pos:stop_pos]
